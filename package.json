@@ -1,0 +1,24 @@
+{
+  "name": "wardli",
+  "version": "1.0.0",
+  "description": "Wardli — Your wardrobe. Your everyday style. Digital wardrobe, outfit builder, history & planner.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "node --test tests/*.test.js"
+  },
+  "keywords": [
+    "wardrobe",
+    "outfit-history",
+    "outfit-planner",
+    "minimal",
+    "accessories"
+  ],
+  "author": "Wardli Team",
+  "license": "MIT",
+  "devDependencies": {
+    "vite": "^6.2.0"
+  }
+}

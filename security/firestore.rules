@@ -1,0 +1,80 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isDocOwner() {
+      return isAuthenticated() && request.auth.uid == resource.data.userId;
+    }
+
+    function willBeDocOwner() {
+      return isAuthenticated() && request.auth.uid == request.resource.data.userId;
+    }
+
+    // Profiles collection
+    match /profiles/{userId} {
+      allow read, write: if isOwner(userId);
+    }
+
+    // Garments collection
+    match /garments/{garmentId} {
+      allow read: if isDocOwner();
+      allow create: if willBeDocOwner();
+      allow update: if isDocOwner() && willBeDocOwner();
+      allow delete: if isDocOwner();
+    }
+
+    // Outfits collection
+    match /outfits/{outfitId} {
+      allow read: if isDocOwner();
+      allow create: if willBeDocOwner();
+      allow update: if isDocOwner() && willBeDocOwner();
+      allow delete: if isDocOwner();
+    }
+
+    // Outfit Items junction collection (if normalized)
+    match /outfit_items/{itemId} {
+      allow read: if isDocOwner();
+      allow create: if willBeDocOwner();
+      allow update: if isDocOwner() && willBeDocOwner();
+      allow delete: if isDocOwner();
+    }
+
+    // Outfit Events (Wear History records)
+    match /outfit_events/{eventId} {
+      allow read: if isDocOwner();
+      allow create: if willBeDocOwner();
+      allow update: if isDocOwner() && willBeDocOwner();
+      allow delete: if isDocOwner();
+    }
+
+    // Planned Outfits (Calendar schedules)
+    match /planned_outfits/{planId} {
+      allow read: if isDocOwner();
+      allow create: if willBeDocOwner();
+      allow update: if isDocOwner() && willBeDocOwner();
+      allow delete: if isDocOwner();
+    }
+
+    // Outfit Feedback (likes, rejections)
+    match /outfit_feedback/{feedbackId} {
+      allow read: if isDocOwner();
+      allow create: if willBeDocOwner();
+      allow update: if isDocOwner() && willBeDocOwner();
+      allow delete: if isDocOwner();
+    }
+
+    // Deny all other access by default
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
