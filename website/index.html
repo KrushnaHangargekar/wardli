@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wardli — Your wardrobe. Your everyday style.</title>
+  <meta name="description" content="Organize your clothes, get rule-based outfit ideas, track exact wear history, and plan looks with accessories support — all in one app.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23000'/><text x='50' y='68' font-size='60' font-family='sans-serif' font-weight='bold' fill='%23fff' text-anchor='middle'>w.</text></svg>">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Top Sticky Navigation -->
+  <header class="site-header">
+    <div class="container nav-wrap">
+      <a href="#" class="brand-link">
+        <div class="brand-icon-box">w.</div>
+        <span class="brand-wordmark">wardli</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#wardrobe">Wardrobe</a></li>
+        <li><a href="#history">History</a></li>
+        <li><a href="#planner">Planner</a></li>
+        <li><a href="#free">Core Free</a></li>
+        <li><a href="/" class="btn-header">Open Web App</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- Hero Section (matching website_hero.png) -->
+  <section class="hero-section">
+    <div class="container hero-grid">
+      <div class="hero-content">
+        <div class="hero-tagline-badge">
+          <span>✨</span>
+          <span>Your wardrobe. Your everyday style.</span>
+        </div>
+        <h1 class="hero-title">
+          Organize your clothes, get outfit ideas and plan your looks.
+        </h1>
+        <p class="hero-subtitle">
+          A minimal, zero-AI digital wardrobe that helps you track what you actually wear, discover fresh combinations, and plan your week with accessories.
+        </p>
+
+        <div class="hero-cta-group">
+          <a href="#" class="btn-cta-main" id="btn-hero-get-app">
+            Get the App &rarr;
+          </a>
+          <a href="/" class="btn-cta-outline">
+            Launch Interactive App &rarr;
+          </a>
+        </div>
+      </div>
+
+      <div class="hero-mockup-wrapper">
+        <div class="phone-mockup-frame">
+          <iframe src="/" class="phone-mockup-inner" title="Wardli Live App Preview"></iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Strip -->
+  <section class="stats-strip">
+    <div class="container stats-grid">
+      <div>
+        <div class="stat-num">100%</div>
+        <div class="stat-desc">Rule-based & Private</div>
+      </div>
+      <div>
+        <div class="stat-num">0</div>
+        <div class="stat-desc">Zero AI APIs or fees</div>
+      </div>
+      <div>
+        <div class="stat-num">3-Click</div>
+        <div class="stat-desc">Instant outfit builder</div>
+      </div>
+      <div>
+        <div class="stat-num">Exact</div>
+        <div class="stat-desc">Wear history snapshot</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Core Features Section (Matching feature_*.png) -->
+  <section class="features-section" id="features">
+    <div class="container">
+      <div class="section-tag">Capabilities</div>
+      <h2 class="section-heading">Built for everyday style clarity.</h2>
+      <p class="section-desc">
+        No cluttered social feeds, no algorithmic noise. Just your genuine wardrobe, smart deterministic rules, and complete ownership.
+      </p>
+
+      <div class="feature-cards-grid">
+        <!-- Feature 1: Complete Digital Wardrobe -->
+        <div class="feature-card" id="wardrobe">
+          <div class="feature-card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3c0 .7.3 1.3.8 1.8L2 14v4a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-4l-7.8-7.2c.5-.5.8-1.1.8-1.8a3 3 0 0 0-3-3z"/></svg>
+          </div>
+          <h3 class="feature-card-title">Complete Digital Wardrobe & Accessories</h3>
+          <p class="feature-card-text">
+            Catalog Tops, Bottoms, Footwear, and all your Accessories — watches, belts, sunglasses, jewelry, bags, and caps. Create custom categories on demand.
+          </p>
+          <ul class="feature-card-bullets">
+            <li>Availability statuses: Clean, Worn, In Laundry, Reserved</li>
+            <li>Color harmony tags and purchase cost tracking</li>
+            <li>Private owner-level isolation for all records and photos</li>
+          </ul>
+        </div>
+
+        <!-- Feature 2: Deterministic Suggestions -->
+        <div class="feature-card">
+          <div class="feature-card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3z"/></svg>
+          </div>
+          <h3 class="feature-card-title">One-Tap Rule-Based Suggestions</h3>
+          <p class="feature-card-text">
+            Generate up to three smart outfit suggestions tailored for College, Office, Casual, Party, Formal, or Travel without any machine learning or third-party APIs.
+          </p>
+          <ul class="feature-card-bullets">
+            <li>Never suggests unavailable, worn, or in-laundry clothes</li>
+            <li>Single-item swap: replace any piece without rebuilding the outfit</li>
+            <li>Configurable repeat-avoidance window (3 to 30 days)</li>
+          </ul>
+        </div>
+
+        <!-- Feature 3: Exact Outfit History -->
+        <div class="feature-card" id="history">
+          <div class="feature-card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <h3 class="feature-card-title">Exact Outfit History & Wear Tracking</h3>
+          <p class="feature-card-text">
+            Tap "I Wore This" to freeze an immutable wear snapshot. View history grouped by Day, Week, and Month, or manually record past outfits.
+          </p>
+          <ul class="feature-card-bullets">
+            <li>Snapshot preservation: past history stays safe even if items are archived</li>
+            <li>Leaderboard of most-worn and least-worn items</li>
+            <li>Search history by date range or occasion</li>
+          </ul>
+        </div>
+
+        <!-- Feature 4: Weekly Planner -->
+        <div class="feature-card" id="planner">
+          <div class="feature-card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="4" rx="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+          </div>
+          <h3 class="feature-card-title">Weekly Planner & Laundry Alerts</h3>
+          <p class="feature-card-text">
+            Plan your looks for the coming week. Planned outfits remain strictly separated from history and do not increment wear counts until confirmed.
+          </p>
+          <ul class="feature-card-bullets">
+            <li>Real-time alert warnings if a planned item is In Laundry or Reserved</li>
+            <li>One-tap "Mark as Worn" converts plans to verified history</li>
+            <li>Clean week-at-a-glance calendar view</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Free Core & Privacy Section -->
+  <section class="features-section" id="free" style="background: #FAFAFA; border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border);">
+    <div class="container" style="text-align: center; max-width: 780px;">
+      <div class="section-tag">Integrity First</div>
+      <h2 class="section-heading">100% Free Core Features. Zero AI Gimmicks.</h2>
+      <p style="font-size: 16px; color: #52525B; line-height: 1.7; margin-bottom: 24px;">
+        Wardli uses deterministic algorithms for color harmony, category matching, and repetition scoring. We never send your wardrobe photos or records to third-party AI models. Every data record is isolated to your private account.
+      </p>
+      <div style="display: flex; justify-content: center; gap: 20px; font-weight: 700; font-size: 14px;">
+        <span>🔒 Owner-Level Privacy</span>
+        <span>🚫 No Paid Subscriptions</span>
+        <span>📦 Complete JSON Export</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- App Download Section (Configurable Google Play Listing) -->
+  <section class="container">
+    <div class="download-section" id="download">
+      <h2 class="download-title">Get Wardli for Android</h2>
+      <p class="download-desc">
+        Experience seamless wardrobe management, one-tap suggestions, and effortless wear history on your mobile device.
+      </p>
+
+      <div class="download-actions">
+        <!-- Configurable Google Play Button -->
+        <a href="#" class="btn-play-store" id="btn-play-store">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M3.6 1.8l11.4 11.4-11.4 11.4c-.4-.4-.6-.9-.6-1.5V3.3c0-.6.2-1.1.6-1.5zm12.8 12.8L19.2 12 16.4 9.2l-2.8 2.8 2.8 2.6zm-1.4-4.2L4.6 2.4l10.4 8zm0 5.6l-10.4 8 10.4-8z"/></svg>
+          <span>Coming Soon to Google Play</span>
+        </a>
+
+        <!-- Live Web App Launch -->
+        <a href="/" class="btn-web-app">
+          <span>🚀 Launch Web App Now</span>
+        </a>
+      </div>
+
+      <p class="play-store-badge-note">
+        Note: The Android app listing is currently in pre-release QA. Use the button above to join the notification waitlist or launch the full-featured web app immediately.
+      </p>
+    </div>
+  </section>
+
+  <!-- Waitlist Modal -->
+  <div class="modal-waitlist" id="waitlist-modal">
+    <div class="modal-waitlist-box">
+      <h3 style="font-size: 22px; font-weight: 800; margin-bottom: 8px;">Google Play Release Notice</h3>
+      <p style="font-size: 14px; color: #71717A; margin-bottom: 20px;">
+        Wardli for Android is currently undergoing final Google Play review. Leave your email to be notified the moment the APK and Play Store listing are live!
+      </p>
+      <form id="waitlist-form">
+        <input type="email" placeholder="Enter your email address" required style="width: 100%; padding: 12px; border: 1px solid #E5E5E5; border-radius: 12px; margin-bottom: 12px; font-size: 14px; outline: none;">
+        <button type="submit" class="btn-cta-main" style="width: 100%; justify-content: center; padding: 12px;">Notify Me</button>
+      </form>
+      <button id="close-waitlist-btn" style="background: none; border: none; margin-top: 14px; color: #71717A; font-size: 13px; cursor: pointer;">Close</button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container footer-wrap">
+      <div>
+        <strong>wardli</strong> &mdash; Your wardrobe. Your everyday style. &copy; 2026.
+      </div>
+      <div>
+        <a href="/" style="color: #000; text-decoration: none; font-weight: 600;">Open Web App &rarr;</a>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="script.js"></script>
+</body>
+</html>
