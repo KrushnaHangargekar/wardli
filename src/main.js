@@ -15,10 +15,14 @@ import { renderHistoryScreen } from './ui/screens/historyScreen.js';
 import { renderPlannerScreen } from './ui/screens/plannerScreen.js';
 import { renderAnalyticsScreen } from './ui/screens/analyticsScreen.js';
 import { renderProfileScreen } from './ui/screens/profileScreen.js';
+import { ambientBackground } from './ui/ambientBackground.js';
 
 class WardliApp {
   constructor() {
     this.screenControllers = {};
+
+    // Mount interactive living ambient lighting
+    ambientBackground.mount();
 
     // Initialize curated seed data for first demo run
     initializeSeedDataIfEmpty(storage);
