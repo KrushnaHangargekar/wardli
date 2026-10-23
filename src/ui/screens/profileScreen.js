@@ -165,6 +165,26 @@ export function renderProfileScreen({ onUserSwitched, onRefreshAll, onOpenLogin,
         </button>
       </div>
 
+      <!-- PWA Mobile App Installation -->
+      <div style="background: #FFFFFF; border: 1px solid #E5E5E5; border-radius: 16px; padding: 16px; margin-bottom: 16px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+          <h3 style="font-size: 14px; font-weight: 800; color: #000000;">Install Mobile App</h3>
+          <span style="font-size: 11px; font-weight: 700; color: #2563EB; background: #EFF6FF; padding: 2px 8px; border-radius: 6px;">
+            PWA Ready
+          </span>
+        </div>
+        <p style="font-size: 12px; color: #71717A; margin-bottom: 12px; line-height: 1.5;">
+          Install Wardli directly on your home screen for full-screen offline access without downloading from app stores.
+        </p>
+
+        <button id="btn-install-pwa" class="btn btn-primary btn-sm" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;">
+          <span>📲</span> <span>Install Wardli to Home Screen</span>
+        </button>
+        <div id="pwa-install-hint" style="display: none; font-size: 11px; color: #71717A; margin-top: 8px; text-align: center; background: #FAFAFA; padding: 8px; border-radius: 8px;">
+          To install on iPhone/iPad: Tap <strong>Share (↑)</strong> in Safari, then tap <strong>Add to Home Screen</strong>.
+        </div>
+      </div>
+
       <!-- Backup, Privacy & Reset -->
       <div style="background: #FFFFFF; border: 1px solid #E5E5E5; border-radius: 16px; padding: 16px; margin-bottom: 24px;">
         <h3 style="font-size: 14px; font-weight: 800; color: #000000; margin-bottom: 12px;">Data Management & Backup</h3>
@@ -210,6 +230,28 @@ export function renderProfileScreen({ onUserSwitched, onRefreshAll, onOpenLogin,
     if (signupBtn) {
       signupBtn.addEventListener('click', () => {
         if (onOpenSignup) onOpenSignup();
+      });
+    }
+
+    // PWA Install Button
+    const pwaBtn = container.querySelector('#btn-install-pwa');
+    const pwaHint = container.querySelector('#pwa-install-hint');
+    if (pwaBtn) {
+      pwaBtn.addEventListener('click', async () => {
+        if (window.deferredPrompt) {
+          window.deferredPrompt.prompt();
+          const { outcome } = await window.deferredPrompt.userChoice;
+          if (outcome === 'accepted') {
+            window.deferredPrompt = null;
+            pwaBtn.textContent = '✓ Wardli Installed!';
+            pwaBtn.disabled = true;
+          }
+        } else {
+          // If already installed or on iOS/Safari
+          if (pwaHint) {
+            pwaHint.style.display = pwaHint.style.display === 'none' ? 'block' : 'none';
+          }
+        }
       });
     }
 

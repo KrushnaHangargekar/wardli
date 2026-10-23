@@ -329,7 +329,15 @@ class WardliApp {
   }
 }
 
+// Global PWA Install Prompt Listener
+window.deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  window.deferredPrompt = e;
+});
+
 // Bootstrap application on DOM ready
 document.addEventListener('DOMContentLoaded', () => {
   window.wardliApp = new WardliApp();
 });
+

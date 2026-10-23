@@ -5,11 +5,33 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Wardli — Your wardrobe. Your everyday style.</title>
   <meta name="description" content="Wardli is your digital wardrobe, rule-based outfit builder, exact wear history tracker, and weekly planner with accessories support.">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23000'/><text x='50' y='68' font-size='60' font-family='sans-serif' font-weight='bold' fill='%23fff' text-anchor='middle'>w.</text></svg>">
+  <meta name="theme-color" content="#000000">
+  
+  <!-- Web App Manifest -->
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/svg+xml" href="/icons/icon-192.svg">
+  
+  <!-- Apple iOS Web App support -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Wardli">
+  <link rel="apple-touch-icon" href="/icons/icon-192.svg">
+
   <link rel="stylesheet" href="/src/styles/main.css">
 </head>
 <body>
   <div id="app-root"></div>
   <script type="module" src="/src/main.js"></script>
+
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(err => {
+          console.warn('Service worker registration:', err);
+        });
+      });
+    }
+  </script>
 </body>
 </html>
