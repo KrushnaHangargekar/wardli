@@ -33,7 +33,14 @@ jobs:
 
       - name: Build Production Assets
         run: |
-          npm run build
+          npm run build > build_output.log 2>&1 || {
+            cat build_output.log
+            echo "## Build Error Log" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            cat build_output.log >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            exit 1
+          }
           touch dist/.nojekyll
 
       - name: Deploy to GitHub Pages (gh-pages branch)
