@@ -1,6 +1,7 @@
 /**
  * Wardli Public Marketing Website Script
- * Handles configurable Google Play link hook and waitlist modal
+ * Handles configurable Google Play link hook, waitlist modal,
+ * and robust dynamic app base path resolution for GitHub Pages.
  */
 
 // Configuration: Keep Google Play link unset or configurable
@@ -10,6 +11,30 @@ const CONFIG = {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
+  // 1. Resolve exact App Base URL (immune to GitHub Pages subfolders & trailing slash variations)
+  const pathname = window.location.pathname;
+  const basePath = pathname.replace(/\/website(\/index\.html|\/)?$/, '') || '';
+  const appBaseUrl = window.location.origin + basePath + (basePath.endsWith('/') ? '' : '/');
+
+  // Set Phone Mockup iframe source
+  const iframe = document.querySelector('.phone-mockup-inner');
+  if (iframe) {
+    iframe.src = appBaseUrl;
+  }
+
+  // Bind dynamic app links
+  document.querySelectorAll('a[data-app-link]').forEach(link => {
+    const action = link.getAttribute('data-app-link');
+    if (action === 'login') {
+      link.href = `${appBaseUrl}?action=login`;
+    } else if (action === 'signup') {
+      link.href = `${appBaseUrl}?action=signup`;
+    } else {
+      link.href = appBaseUrl;
+    }
+  });
+
+  // 2. Waitlist modal & store buttons
   const modal = document.getElementById('waitlist-modal');
   const closeBtn = document.getElementById('close-waitlist-btn');
   const playStoreBtn = document.getElementById('btn-play-store');
