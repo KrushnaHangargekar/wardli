@@ -2,23 +2,16 @@
  * Wardli Service Worker — Offline Support & Asset Caching
  */
 
-const CACHE_NAME = 'wardli-cache-v1';
+const CACHE_NAME = 'wardli-cache-v4';
 const STATIC_ASSETS = [
-  '/',
-  '/index.html',
-  '/public/manifest.json',
-  '/public/icons/icon-192.svg',
-  '/public/icons/icon-512.svg'
+  './',
+  './index.html',
+  './manifest.json',
+  './icons/icon-192.svg',
+  './icons/icon-512.svg'
 ];
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(STATIC_ASSETS).catch(err => {
-        console.warn('Pre-cache partial failure (expected during dev mode):', err);
-      });
-    })
-  );
   self.skipWaiting();
 });
 
@@ -26,11 +19,14 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
       return Promise.all(
-        keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
+        keys.map((key) => {
+          if (key !== CACHE_NAME) {
+            return caches.delete(key);
+          }
+        })
       );
-    })
+    }).then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
 self.addEventListener('fetch', (event) => {
