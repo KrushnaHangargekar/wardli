@@ -25,22 +25,15 @@ jobs:
       - name: Install Dependencies
         run: |
           npm install
-          npm install @rollup/rollup-linux-x64-gnu --no-save || true
+          chmod -R +x node_modules/.bin || true
 
       - name: Run Test Suite
         run: npm test
 
       - name: Build Production Assets
         run: |
-          npx vite build > build.log 2>&1 || true
-          cat build.log
-          git config user.name "ci-bot"
-          git config user.email "bot@ci.com"
-          git checkout -B build-debug-log
-          git add -f build.log
-          git commit -m "debug: $(cat build.log | head -c 200)"
-          git push -f origin build-debug-log || true
-          npx vite build
+          chmod -R +x node_modules/.bin || true
+          node node_modules/vite/bin/vite.js build
           touch dist/.nojekyll
 
       - name: Deploy to GitHub Pages
