@@ -76,14 +76,16 @@ export function renderPlannerScreen({ onOpenPlanModal, onRefreshAll, onNavigateH
       </div>
 
       <!-- Informative Note -->
-      <div style="background: #FAFAFA; border: 1px solid #E5E5E5; border-radius: 8px; padding: 8px 12px; margin-bottom: 16px; font-size: 11px; color: #71717A;">
-        ℹ️ <strong>Strict Rule:</strong> Scheduled outfits do NOT increment wear counts or appear in wear history until you tap "Mark as Worn".
+      <div style="background: #FAFAFA; border: 1px solid #E5E5E5; border-left: 3px solid #27272A; border-radius: 8px; padding: 8px 12px; margin-bottom: 16px; font-size: 11px; color: #71717A;">
+        <strong style="color: #1F1F1F;">Note:</strong> Scheduled outfits do not increment wear counts or appear in wear history until you tap &ldquo;Mark as Worn&rdquo;.
       </div>
 
       <!-- Selected Day's Plan Card -->
       ${!currentPlan ? `
         <div class="empty-state" style="padding: 30px 10px;">
-          <div style="font-size: 34px;">📅</div>
+          <div style="width: 40px; height: 40px; border-radius: 10px; background: #F4F4F5; margin: 0 auto 14px; display: flex; align-items: center; justify-content: center;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#71717A" stroke-width="2"><rect width="18" height="18" x="3" y="4" rx="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+          </div>
           <h3 class="empty-state-title">No outfit planned for this date</h3>
           <p class="empty-state-desc">Plan your look in advance to stay organized throughout the week.</p>
           <button id="btn-plan-for-day" class="btn btn-primary btn-sm" style="margin-top: 10px;">
@@ -95,9 +97,9 @@ export function renderPlannerScreen({ onOpenPlanModal, onRefreshAll, onNavigateH
           <!-- Real-Time Status Warnings -->
           ${currentPlan.hasWarnings ? `
             <div class="warning-banner">
-              <span>⚠️</span>
+              <div style="width: 16px; height: 16px; border-radius: 3px; background: #D97706; flex-shrink: 0; margin-top: 1px;"></div>
               <div>
-                ${currentPlan.warnings.map(w => `<div>${w.message}!</div>`).join('')}
+                ${currentPlan.warnings.map(w => `<div>${w.message}</div>`).join('')}
               </div>
             </div>
           ` : ''}
@@ -142,7 +144,7 @@ export function renderPlannerScreen({ onOpenPlanModal, onRefreshAll, onNavigateH
             <div style="display: flex; gap: 6px; overflow-x: auto; padding: 4px 0;">
               ${currentPlan.accessories.map(acc => `
                 <div style="display: flex; align-items: center; gap: 4px; background: #FAFAFA; border: 1px solid #E5E5E5; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 600;">
-                  <span style="font-size: 12px;">⌚</span>
+                  <span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #27272A; flex-shrink: 0;"></span>
                   <span>${acc.name}</span>
                 </div>
               `).join('')}
@@ -158,7 +160,7 @@ export function renderPlannerScreen({ onOpenPlanModal, onRefreshAll, onNavigateH
           <!-- Plan Action Buttons -->
           <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">
             <button id="btn-mark-plan-worn" class="btn btn-primary" style="padding: 12px;">
-              ✓ Mark as Worn (Create History)
+              Mark as Worn
             </button>
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">

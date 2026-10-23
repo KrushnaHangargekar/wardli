@@ -5,7 +5,7 @@
 
 import { BRAND_SVGS } from '../assets.js';
 
-export function renderOnboardingScreen(onGetStarted) {
+export function renderOnboardingScreen({ onGetStarted, onOpenLogin, onOpenSignup }) {
   const container = document.createElement('div');
   container.className = 'onboarding-screen';
   container.style.cssText = `
@@ -29,7 +29,7 @@ export function renderOnboardingScreen(onGetStarted) {
     </div>
 
     <!-- Minimalist Clothes Rail Graphic -->
-    <div style="width: 100%; max-width: 320px; margin: 40px auto; background: #FAFAFA; border: 1px solid #E5E5E5; border-radius: 20px; padding: 28px 16px; position: relative;">
+    <div style="width: 100%; max-width: 320px; margin: 30px auto; background: #FAFAFA; border: 1px solid #E5E5E5; border-radius: 20px; padding: 28px 16px; position: relative;">
       <svg viewBox="0 0 280 200" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: auto;">
         <!-- Rail frame -->
         <line x1="20" y1="30" x2="260" y2="30" stroke="#1F1F1F" stroke-width="4" stroke-linecap="round"/>
@@ -65,15 +65,26 @@ export function renderOnboardingScreen(onGetStarted) {
     </div>
 
     <div style="width: 100%; max-width: 340px; margin-bottom: 20px;">
-      <p style="font-size: 13px; color: #71717A; margin-bottom: 20px; line-height: 1.5;">
+      <p style="font-size: 13px; color: #71717A; margin-bottom: 16px; line-height: 1.5;">
         Organize clothing and accessories, get rule-based outfit recommendations, and track exact wear history.
       </p>
-      <button id="btn-onboarding-start" class="btn btn-primary btn-block" style="padding: 14px; font-size: 15px; border-radius: 16px;">
-        Get Started &rarr;
-      </button>
+
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <button id="btn-onboarding-signup" class="btn btn-primary btn-block" style="padding: 14px; font-size: 14px; font-weight: 700; border-radius: 14px;">
+          Create Free Account &rarr;
+        </button>
+        <button id="btn-onboarding-login" class="btn btn-secondary btn-block" style="padding: 13px; font-size: 14px; font-weight: 700; border-radius: 14px;">
+          Log In
+        </button>
+        <button id="btn-onboarding-demo" style="background: none; border: none; font-size: 13px; font-weight: 600; color: #71717A; cursor: pointer; text-decoration: underline; padding: 6px;">
+          Explore with Demo Wardrobe
+        </button>
+      </div>
     </div>
   `;
 
-  container.querySelector('#btn-onboarding-start').addEventListener('click', onGetStarted);
+  container.querySelector('#btn-onboarding-signup').addEventListener('click', onOpenSignup);
+  container.querySelector('#btn-onboarding-login').addEventListener('click', onOpenLogin);
+  container.querySelector('#btn-onboarding-demo').addEventListener('click', onGetStarted);
   return container;
 }

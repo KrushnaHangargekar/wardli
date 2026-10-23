@@ -61,7 +61,9 @@ export function renderSuggestionsScreen({ onOpenSwapDrawer, onNavigateHistory, o
 
       ${!currentOutfit ? `
         <div class="empty-state" style="margin-top: 30px;">
-          <div style="font-size: 40px;">✨</div>
+          <div style="width: 40px; height: 40px; border-radius: 10px; background: #F4F4F5; margin: 0 auto 14px; display: flex; align-items: center; justify-content: center;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#71717A" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3c0 .7.3 1.3.8 1.8L2 14v4a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-4l-7.8-7.2c.5-.5.8-1.1.8-1.8a3 3 0 0 0-3-3z"/></svg>
+          </div>
           <h3 class="empty-state-title">No clean outfits available</h3>
           <p class="empty-state-desc">You need at least one clean Top, Bottom, and Footwear to generate suggestions.</p>
           <p style="font-size: 12px; color: #71717A; margin-top: 6px;">Check your wardrobe to make sure garments are not marked In Laundry or Reserved.</p>
@@ -130,14 +132,13 @@ export function renderSuggestionsScreen({ onOpenSwapDrawer, onNavigateHistory, o
           <!-- History & Repetition Indicator Badge -->
           <div style="display: flex; align-items: center; justify-content: space-between; padding: 4px 6px; font-size: 12px;">
             <div style="display: flex; align-items: center; gap: 6px;">
-              <span style="font-size: 14px;">🗓️</span>
               ${currentOutfit.historyInfo?.hasBeenWorn ? `
                 <span style="color: #D97706; font-weight: 600;">
-                  Worn ${currentOutfit.historyInfo.totalWears}x (Last: ${currentOutfit.historyInfo.lastWornDate})
+                  Worn ${currentOutfit.historyInfo.totalWears}&times; &mdash; Last: ${currentOutfit.historyInfo.lastWornDate}
                 </span>
               ` : `
                 <span style="color: #059669; font-weight: 600;">
-                  Fresh Look — Never recorded as worn
+                  Not yet recorded
                 </span>
               `}
             </div>
@@ -161,10 +162,10 @@ export function renderSuggestionsScreen({ onOpenSwapDrawer, onNavigateHistory, o
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
               <button id="btn-save-outfit" class="btn btn-secondary btn-sm" style="padding: 10px;">
-                ❤️ Save Outfit
+                Save Outfit
               </button>
               <button id="btn-try-another" class="btn btn-secondary btn-sm" style="padding: 10px;">
-                🔄 Try Another (${activeIndex + 1}/${currentSuggestions.length})
+                Next (${activeIndex + 1}/${currentSuggestions.length})
               </button>
             </div>
           </div>

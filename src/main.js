@@ -1,8 +1,10 @@
 /**
  * Wardli Application Main Entry Point & Screen Orchestrator
+ * Integrates Authentication, User Isolation, and Navigation Flow.
  */
 
 import { storage } from './services/storage.js';
+import { authService } from './services/authService.js';
 import { initializeSeedDataIfEmpty } from './services/seedData.js';
 import { BRAND_SVGS } from './ui/assets.js';
 import { modalManager } from './ui/modals.js';
@@ -16,56 +18,63 @@ import { renderProfileScreen } from './ui/screens/profileScreen.js';
 
 class WardliApp {
   constructor() {
-    this.currentScreen = 'wardrobe';
-    this.isExpandedView = false;
     this.screenControllers = {};
 
-    // Initialize curated seed data for first run
+    // Initialize curated seed data for first demo run
     initializeSeedDataIfEmpty(storage);
+
+    // Check active session or query parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const actionParam = urlParams.get('action');
+
+    const session = authService.getSession();
+    if (session) {
+      storage.setCurrentUserId(session.id);
+      this.currentScreen = 'wardrobe';
+    } else {
+      // If not authenticated, default to onboarding splash
+      this.currentScreen = 'onboarding';
+    }
 
     this.initDOM();
     this.attachGlobalEvents();
     this.navigateTo(this.currentScreen);
+
+    // Deep-link triggers from marketing website
+    if (actionParam === 'login') {
+      setTimeout(() => this.handleOpenLogin(), 300);
+    } else if (actionParam === 'signup') {
+      setTimeout(() => this.handleOpenSignup(), 300);
+    }
   }
 
   initDOM() {
     const root = document.getElementById('app-root');
     root.innerHTML = `
-      <div class="app-viewport-wrapper">
-        <div class="device-frame" id="device-frame-container">
-          <!-- Android Status Bar -->
-          <div class="device-status-bar">
-            <span>9:41</span>
-            <div class="device-notch"></div>
-            <div style="display: flex; gap: 4px; align-items: center;">
-              <span>5G</span>
-              <span style="font-size: 11px;">100%</span>
-            </div>
-          </div>
-
-          <!-- Top App Bar -->
-          <header class="app-header">
+      <div class="app-layout">
+        <!-- Top App Bar -->
+        <header class="app-header">
+          <div class="app-header-inner">
             <a href="#" class="app-brand-lockup" id="brand-home-link">
               <div class="app-icon-mini">w.</div>
               <span class="app-brand-title">wardli</span>
             </a>
 
             <div class="header-actions">
-              <button class="user-badge-btn" id="header-user-btn" title="Switch User / Account Isolation">
+              <button class="user-badge-btn" id="header-user-btn" title="View Account Profile">
                 <span class="user-dot"></span>
                 <span id="header-user-name">Alex</span>
               </button>
-              <button class="icon-btn-toggle" id="btn-toggle-view" title="Toggle Mobile Mockup / Expanded View">
-                📱
+              <button id="header-auth-action-btn" class="btn btn-secondary btn-sm" style="font-size: 11px; padding: 4px 10px; border-radius: 8px;">
+                Log Out
               </button>
             </div>
-          </header>
+          </div>
+        </header>
 
-          <!-- Dynamic Screen Viewport -->
-          <main class="app-screen-container" id="screen-viewport"></main>
-
-          <!-- Bottom Navigation Bar -->
-          <nav class="bottom-nav" id="bottom-nav-bar">
+        <!-- Navigation Bar (Adapts responsively to mobile and desktop) -->
+        <nav class="bottom-nav" id="bottom-nav-bar">
+          <div class="nav-inner">
             <button class="nav-item active" data-nav="wardrobe">
               ${BRAND_SVGS.wardrobeIcon}
               <span>Wardrobe</span>
@@ -90,23 +99,42 @@ class WardliApp {
               ${BRAND_SVGS.profileIcon}
               <span>Profile</span>
             </button>
-          </nav>
-        </div>
+          </div>
+        </nav>
+
+        <!-- Dynamic Screen Viewport -->
+        <main class="app-screen-container" id="screen-viewport"></main>
       </div>
     `;
 
     this.viewport = document.getElementById('screen-viewport');
-    this.deviceFrame = document.getElementById('device-frame-container');
     this.navBar = document.getElementById('bottom-nav-bar');
     this.updateUserBadge();
   }
 
   updateUserBadge() {
     const userBtn = document.getElementById('header-user-name');
+    const authBtn = document.getElementById('header-auth-action-btn');
     const userId = storage.getCurrentUserId();
+    const session = authService.getSession();
     const profile = storage.getProfile(userId);
+
     if (userBtn) {
-      userBtn.textContent = profile?.displayName ? profile.displayName.split(' ')[0] : 'User';
+      if (session) {
+        userBtn.textContent = (session.name || profile?.displayName || 'User').split(' ')[0];
+      } else {
+        userBtn.textContent = 'Guest';
+      }
+    }
+
+    if (authBtn) {
+      if (authService.isAuthenticated()) {
+        authBtn.textContent = 'Log Out';
+        authBtn.style.color = '#71717A';
+      } else {
+        authBtn.textContent = 'Log In';
+        authBtn.style.color = '#000000';
+      }
     }
   }
 
@@ -130,12 +158,54 @@ class WardliApp {
       this.navigateTo('profile');
     });
 
-    // View toggle (Mobile frame vs Expanded)
-    document.getElementById('btn-toggle-view').addEventListener('click', () => {
-      this.isExpandedView = !this.isExpandedView;
-      this.deviceFrame.classList.toggle('expanded-view', this.isExpandedView);
-      document.getElementById('btn-toggle-view').textContent = this.isExpandedView ? '💻' : '📱';
+    // Header Auth Action (Log Out or Log In)
+    document.getElementById('header-auth-action-btn').addEventListener('click', () => {
+      if (authService.isAuthenticated()) {
+        this.handleLogout();
+      } else {
+        this.handleOpenLogin();
+      }
     });
+  }
+
+  handleOpenLogin() {
+    modalManager.openLoginModal({
+      onSuccess: (user) => {
+        this.updateUserBadge();
+        this.refreshAll();
+        this.navigateTo('wardrobe');
+      },
+      onSwitchToSignup: () => {
+        setTimeout(() => this.handleOpenSignup(), 260);
+      }
+    });
+  }
+
+  handleOpenSignup() {
+    modalManager.openSignupModal({
+      onSuccess: (user) => {
+        this.updateUserBadge();
+        this.refreshAll();
+        this.navigateTo('wardrobe');
+      },
+      onSwitchToLogin: () => {
+        setTimeout(() => this.handleOpenLogin(), 260);
+      }
+    });
+  }
+
+  handleLogout() {
+    authService.logout();
+    this.updateUserBadge();
+    this.refreshAll();
+    this.navigateTo('onboarding');
+  }
+
+  handleDemoEnter() {
+    authService.loginAsDemo('user_default');
+    this.updateUserBadge();
+    this.refreshAll();
+    this.navigateTo('wardrobe');
   }
 
   navigateTo(screenKey) {
@@ -149,7 +219,11 @@ class WardliApp {
 
     // Render targeted screen
     if (screenKey === 'onboarding') {
-      const screen = renderOnboardingScreen(() => this.navigateTo('wardrobe'));
+      const screen = renderOnboardingScreen({
+        onOpenLogin: () => this.handleOpenLogin(),
+        onOpenSignup: () => this.handleOpenSignup(),
+        onGetStarted: () => this.handleDemoEnter()
+      });
       this.viewport.appendChild(screen);
     } else if (screenKey === 'wardrobe') {
       const ctrl = renderWardrobeScreen({
@@ -224,6 +298,9 @@ class WardliApp {
       this.viewport.appendChild(ctrl.element);
     } else if (screenKey === 'profile') {
       const ctrl = renderProfileScreen({
+        onOpenLogin: () => this.handleOpenLogin(),
+        onOpenSignup: () => this.handleOpenSignup(),
+        onLogout: () => this.handleLogout(),
         onUserSwitched: () => {
           this.updateUserBadge();
           this.refreshAll();

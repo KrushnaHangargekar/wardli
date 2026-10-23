@@ -46,7 +46,7 @@ export function renderHistoryScreen({ onOpenManualLog, onOpenHistoryDetail, onOp
         </div>
 
         <button id="btn-wear-summary" style="font-size: 11px; font-weight: 700; background: #F4F4F5; border: 1px solid #E5E5E5; padding: 6px 10px; border-radius: 8px; cursor: pointer;">
-          📊 Wear Counts
+          Wear Counts
         </button>
       </div>
 
@@ -62,7 +62,9 @@ export function renderHistoryScreen({ onOpenManualLog, onOpenHistoryDetail, onOp
       <!-- Grouped History List -->
       ${groups.length === 0 ? `
         <div class="empty-state">
-          <div style="font-size: 36px;">⏳</div>
+          <div style="width: 40px; height: 40px; border-radius: 10px; background: #F4F4F5; margin: 0 auto 14px; display: flex; align-items: center; justify-content: center;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#71717A" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
           <h3 class="empty-state-title">No wear history yet</h3>
           <p class="empty-state-desc">Wear an outfit from the suggestions tab or log a past outfit manually to start tracking.</p>
           <button id="btn-empty-log" class="btn btn-secondary btn-sm" style="margin-top: 10px;">

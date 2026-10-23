@@ -3,7 +3,7 @@
  * Matching design sheet: 02_wardrobe.png
  */
 
-import { storage } from '../../services/storage.js';
+import { storage, formatCurrency } from '../../services/storage.js';
 import { AVAILABILITY_STATUS, DEFAULT_SUBCATEGORIES, OCCASIONS, COLOR_PALETTES } from '../../domain/constants.js';
 import { createGarment } from '../../domain/models.js';
 import { getGarmentSvg } from '../assets.js';
@@ -65,7 +65,9 @@ export function renderWardrobeScreen({ onOpenAddItem, onOpenItemDetail, onRefres
       <!-- Garments Grid -->
       ${garments.length === 0 ? `
         <div class="empty-state">
-          <div style="font-size: 36px;">👕</div>
+          <div style="width: 40px; height: 40px; border-radius: 10px; background: #F4F4F5; margin: 0 auto 14px; display: flex; align-items: center; justify-content: center;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#71717A" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3c0 .7.3 1.3.8 1.8L2 14v4a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-4l-7.8-7.2c.5-.5.8-1.1.8-1.8a3 3 0 0 0-3-3z"/></svg>
+          </div>
           <h3 class="empty-state-title">No items found</h3>
           <p class="empty-state-desc">There are no items matching "${activeCategory}" with status "${activeStatus}".</p>
           <button id="btn-empty-add" class="btn btn-secondary btn-sm" style="margin-top: 10px;">
@@ -77,8 +79,8 @@ export function renderWardrobeScreen({ onOpenAddItem, onOpenItemDetail, onRefres
           ${garments.map(item => {
             const statusClass = item.status.toLowerCase().replace(' ', '-');
             const cpw = item.purchasePrice && (item.wearCount || 0) > 0
-              ? `$${(item.purchasePrice / item.wearCount).toFixed(0)}/wear`
-              : item.purchasePrice ? `$${item.purchasePrice}` : '';
+              ? `${formatCurrency(Math.round(item.purchasePrice / item.wearCount))}/wear`
+              : item.purchasePrice ? `${formatCurrency(item.purchasePrice)}` : '';
 
             return `
               <div class="garment-card" data-id="${item.id}">

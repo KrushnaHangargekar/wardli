@@ -4,6 +4,7 @@
  */
 
 import { createGarmentSnapshot } from '../domain/models.js';
+import { CURRENCIES } from '../domain/constants.js';
 
 const STORAGE_PREFIX = 'wardli_v1_';
 
@@ -24,6 +25,31 @@ export class StorageRepository {
   setCurrentUserId(userId) {
     if (!userId) return;
     this.currentUserId = userId;
+  }
+
+  getCurrency() {
+    if (this.isBrowser()) {
+      try {
+        const code = window.localStorage.getItem(this._getKey('preferred_currency'));
+        if (code && CURRENCIES[code]) return CURRENCIES[code];
+      } catch (e) {
+        // fallback
+      }
+    }
+    return this.memoryStore['preferred_currency'] || CURRENCIES.INR;
+  }
+
+  setCurrency(code) {
+    if (!CURRENCIES[code]) return;
+    const curr = CURRENCIES[code];
+    if (this.isBrowser()) {
+      try {
+        window.localStorage.setItem(this._getKey('preferred_currency'), code);
+      } catch (e) {
+        // fallback
+      }
+    }
+    this.memoryStore['preferred_currency'] = curr;
   }
 
   _getKey(collection) {
@@ -299,3 +325,10 @@ export class StorageRepository {
 }
 
 export const storage = new StorageRepository();
+
+export function formatCurrency(amount, currency = storage.getCurrency()) {
+  if (amount === null || amount === undefined || isNaN(Number(amount))) return '';
+  const num = Number(amount);
+  const formatted = num % 1 === 0 ? num.toLocaleString() : num.toFixed(2);
+  return `${currency.symbol}${formatted}`;
+}

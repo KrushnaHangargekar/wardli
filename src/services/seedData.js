@@ -28,7 +28,7 @@ export function getCuratedSeedWardrobe(userId = 'user_default') {
       secondaryColor: null,
       occasions: ['Casual', 'College', 'Travel'],
       status: AVAILABILITY_STATUS.CLEAN,
-      purchasePrice: 38,
+      purchasePrice: 1499,
       purchaseDate: '2026-08-15',
       wearCount: 6
     }),
@@ -42,7 +42,7 @@ export function getCuratedSeedWardrobe(userId = 'user_default') {
       secondaryColor: null,
       occasions: ['Casual', 'College', 'Party'],
       status: AVAILABILITY_STATUS.CLEAN,
-      purchasePrice: 32,
+      purchasePrice: 1299,
       purchaseDate: '2026-08-20',
       wearCount: 5
     }),
@@ -56,7 +56,7 @@ export function getCuratedSeedWardrobe(userId = 'user_default') {
       secondaryColor: null,
       occasions: ['Office', 'Formal', 'Casual'],
       status: AVAILABILITY_STATUS.CLEAN,
-      purchasePrice: 95,
+      purchasePrice: 3499,
       purchaseDate: '2026-09-05',
       wearCount: 4
     }),
@@ -70,7 +70,7 @@ export function getCuratedSeedWardrobe(userId = 'user_default') {
       secondaryColor: null,
       occasions: ['Office', 'Formal', 'Party'],
       status: AVAILABILITY_STATUS.CLEAN,
-      purchasePrice: 65,
+      purchasePrice: 2499,
       purchaseDate: '2026-07-12',
       wearCount: 3
     }),
@@ -84,7 +84,7 @@ export function getCuratedSeedWardrobe(userId = 'user_default') {
       secondaryColor: null,
       occasions: ['Office', 'Casual', 'Party', 'College'],
       status: AVAILABILITY_STATUS.CLEAN,
-      purchasePrice: 110,
+      purchasePrice: 3999,
       purchaseDate: '2026-06-10',
       wearCount: 7
     }),
@@ -98,7 +98,7 @@ export function getCuratedSeedWardrobe(userId = 'user_default') {
       secondaryColor: null,
       occasions: ['Casual', 'College', 'Travel'],
       status: AVAILABILITY_STATUS.IN_LAUNDRY, // Testing warning
-      purchasePrice: 75,
+      purchasePrice: 2999,
       purchaseDate: '2026-09-18',
       wearCount: 2
     }),
@@ -112,7 +112,7 @@ export function getCuratedSeedWardrobe(userId = 'user_default') {
       secondaryColor: null,
       occasions: ['Formal', 'Party'],
       status: AVAILABILITY_STATUS.RESERVED, // Testing reserved
-      purchasePrice: 220,
+      purchasePrice: 8999,
       purchaseDate: '2026-05-14',
       wearCount: 1
     }),
@@ -128,7 +128,7 @@ export function getCuratedSeedWardrobe(userId = 'user_default') {
       secondaryColor: null,
       occasions: ['Office', 'Formal', 'Casual', 'Party'],
       status: AVAILABILITY_STATUS.CLEAN,
-      purchasePrice: 85,
+      purchasePrice: 3499,
       purchaseDate: '2026-07-22',
       wearCount: 7
     }),
@@ -142,7 +142,7 @@ export function getCuratedSeedWardrobe(userId = 'user_default') {
       secondaryColor: null,
       occasions: ['Casual', 'College', 'Travel', 'Party'],
       status: AVAILABILITY_STATUS.CLEAN,
-      purchasePrice: 115,
+      purchasePrice: 4299,
       purchaseDate: '2026-08-01',
       wearCount: 8
     }),
@@ -156,7 +156,7 @@ export function getCuratedSeedWardrobe(userId = 'user_default') {
       secondaryColor: null,
       occasions: ['Casual', 'College', 'Office'],
       status: AVAILABILITY_STATUS.CLEAN,
-      purchasePrice: 70,
+      purchasePrice: 2799,
       purchaseDate: '2026-09-02',
       wearCount: 3
     }),
@@ -170,7 +170,7 @@ export function getCuratedSeedWardrobe(userId = 'user_default') {
       secondaryColor: null,
       occasions: ['Casual', 'Travel'],
       status: AVAILABILITY_STATUS.CLEAN,
-      purchasePrice: 48,
+      purchasePrice: 1899,
       purchaseDate: '2026-06-25',
       wearCount: 2
     }),
@@ -186,7 +186,7 @@ export function getCuratedSeedWardrobe(userId = 'user_default') {
       secondaryColor: null,
       occasions: ['Casual', 'College', 'Office', 'Travel'],
       status: AVAILABILITY_STATUS.CLEAN,
-      purchasePrice: 130,
+      purchasePrice: 5499,
       purchaseDate: '2026-07-15',
       wearCount: 10
     }),
@@ -200,7 +200,7 @@ export function getCuratedSeedWardrobe(userId = 'user_default') {
       secondaryColor: null,
       occasions: ['Formal', 'Office', 'Party'],
       status: AVAILABILITY_STATUS.CLEAN,
-      purchasePrice: 160,
+      purchasePrice: 6999,
       purchaseDate: '2026-05-10',
       wearCount: 5
     }),
@@ -214,7 +214,7 @@ export function getCuratedSeedWardrobe(userId = 'user_default') {
       secondaryColor: null,
       occasions: ['Casual', 'Office', 'Party'],
       status: AVAILABILITY_STATUS.CLEAN,
-      purchasePrice: 175,
+      purchasePrice: 7499,
       purchaseDate: '2026-08-30',
       wearCount: 4
     }),
@@ -230,7 +230,7 @@ export function getCuratedSeedWardrobe(userId = 'user_default') {
       secondaryColor: 'White',
       occasions: ['Casual', 'Office', 'Formal', 'Party', 'College'],
       status: AVAILABILITY_STATUS.CLEAN,
-      purchasePrice: 145,
+      purchasePrice: 5999,
       purchaseDate: '2026-04-10',
       wearCount: 9
     }),
@@ -244,7 +244,7 @@ export function getCuratedSeedWardrobe(userId = 'user_default') {
       secondaryColor: null,
       occasions: ['Casual', 'Office', 'Formal'],
       status: AVAILABILITY_STATUS.CLEAN,
-      purchasePrice: 42,
+      purchasePrice: 1699,
       purchaseDate: '2026-06-01',
       wearCount: 8
     }),
@@ -258,7 +258,7 @@ export function getCuratedSeedWardrobe(userId = 'user_default') {
       secondaryColor: null,
       occasions: ['Casual', 'Travel', 'Party'],
       status: AVAILABILITY_STATUS.CLEAN,
-      purchasePrice: 65,
+      purchasePrice: 2499,
       purchaseDate: '2026-07-04',
       wearCount: 6
     }),
@@ -272,7 +272,7 @@ export function getCuratedSeedWardrobe(userId = 'user_default') {
       secondaryColor: null,
       occasions: ['Party', 'Casual', 'College'],
       status: AVAILABILITY_STATUS.CLEAN,
-      purchasePrice: 50,
+      purchasePrice: 1999,
       purchaseDate: '2026-08-12',
       wearCount: 5
     }),
@@ -286,7 +286,7 @@ export function getCuratedSeedWardrobe(userId = 'user_default') {
       secondaryColor: null,
       occasions: ['College', 'Office', 'Travel'],
       status: AVAILABILITY_STATUS.CLEAN,
-      purchasePrice: 90,
+      purchasePrice: 3499,
       purchaseDate: '2026-08-25',
       wearCount: 7
     }),
@@ -300,7 +300,7 @@ export function getCuratedSeedWardrobe(userId = 'user_default') {
       secondaryColor: 'White',
       occasions: ['Casual', 'College', 'Travel'],
       status: AVAILABILITY_STATUS.CLEAN,
-      purchasePrice: 28,
+      purchasePrice: 999,
       purchaseDate: '2026-09-01',
       wearCount: 4
     })

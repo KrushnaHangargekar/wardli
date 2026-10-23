@@ -82,3 +82,10 @@ export const COLOR_PALETTES = [
 ];
 
 export const DEFAULT_AVOIDANCE_DAYS = 7;
+
+export const CURRENCIES = {
+  INR: { code: 'INR', symbol: '₹', label: '₹ INR (Indian Rupee)' },
+  USD: { code: 'USD', symbol: '$', label: '$ USD (US Dollar)' },
+  EUR: { code: 'EUR', symbol: '€', label: '€ EUR (Euro)' },
+  GBP: { code: 'GBP', symbol: '£', label: '£ GBP (British Pound)' }
+};

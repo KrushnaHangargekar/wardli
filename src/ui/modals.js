@@ -3,11 +3,12 @@
  * Handles Add Garment, Garment Detail, Item Swap, History Detail, Manual Past Wear, and Schedule Plan.
  */
 
-import { storage } from '../services/storage.js';
+import { storage, formatCurrency } from '../services/storage.js';
+import { authService } from '../services/authService.js';
 import { historyService } from '../services/historyService.js';
 import { plannerService } from '../services/plannerService.js';
 import { suggestionEngine } from '../services/suggestionEngine.js';
-import { AVAILABILITY_STATUS, DEFAULT_SUBCATEGORIES, OCCASIONS, COLOR_PALETTES } from '../domain/constants.js';
+import { AVAILABILITY_STATUS, DEFAULT_SUBCATEGORIES, OCCASIONS, COLOR_PALETTES, CURRENCIES } from '../domain/constants.js';
 import { createGarment } from '../domain/models.js';
 import { getGarmentSvg } from './assets.js';
 
@@ -109,8 +110,8 @@ export class ModalManager {
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
           <div class="form-group">
-            <label class="form-label">Purchase Price ($)</label>
-            <input type="number" id="garm-price" class="form-input" placeholder="e.g. 45" min="0" step="1">
+            <label class="form-label">Purchase Price (${storage.getCurrency().symbol})</label>
+            <input type="number" id="garm-price" class="form-input" placeholder="e.g. 1499" min="0" step="1">
           </div>
           <div class="form-group">
             <label class="form-label">Purchase Date</label>
@@ -173,8 +174,8 @@ export class ModalManager {
     if (!garment) return;
 
     const cpw = garment.purchasePrice && (garment.wearCount || 0) > 0
-      ? `$${(garment.purchasePrice / garment.wearCount).toFixed(2)} / wear`
-      : garment.purchasePrice ? `$${garment.purchasePrice} (Unworn)` : 'Not set';
+      ? `${formatCurrency(garment.purchasePrice / garment.wearCount)} / wear`
+      : garment.purchasePrice ? `${formatCurrency(garment.purchasePrice)} (Unworn)` : 'Not set';
 
     const contentHtml = `
       <div style="text-align: center; margin-bottom: 20px;">
@@ -197,7 +198,7 @@ export class ModalManager {
           </div>
           <div>
             <span style="color: #71717A; font-size: 11px; text-transform: uppercase; font-weight: 700;">Purchase Price</span>
-            <div style="font-size: 14px; font-weight: 700; color: #000000;">${garment.purchasePrice ? `$${garment.purchasePrice}` : 'None'}</div>
+            <div style="font-size: 14px; font-weight: 700; color: #000000;">${garment.purchasePrice ? formatCurrency(garment.purchasePrice) : 'None'}</div>
           </div>
           <div>
             <span style="color: #71717A; font-size: 11px; text-transform: uppercase; font-weight: 700;">Occasions</span>
@@ -267,7 +268,9 @@ export class ModalManager {
 
       ${replacements.length === 0 ? `
         <div class="empty-state" style="padding: 20px;">
-          <div style="font-size: 28px;">👔</div>
+          <div style="width: 36px; height: 36px; border-radius: 8px; background: #F4F4F5; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#71717A" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3c0 .7.3 1.3.8 1.8L2 14v4a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-4l-7.8-7.2c.5-.5.8-1.1.8-1.8a3 3 0 0 0-3-3z"/></svg>
+          </div>
           <div class="empty-state-title">No alternative clean ${category} available</div>
           <p class="empty-state-desc">All other items in this category are either in laundry, reserved, or already selected.</p>
         </div>
@@ -286,7 +289,7 @@ export class ModalManager {
                 <div>
                   <div style="font-size: 13px; font-weight: 700; color: #000000;">${r.item.name}</div>
                   <div style="font-size: 11px; color: #71717A;">
-                    ${r.item.primaryColor} &bull; ${r.item.occasions.includes(occasion) ? '✓ Matches occasion' : 'Alternative'}
+                    ${r.item.primaryColor} &bull; ${r.item.occasions.includes(occasion) ? 'Matches occasion' : 'Alternative'}
                   </div>
                 </div>
               </div>
@@ -350,14 +353,14 @@ export class ModalManager {
                 <div style="font-size: 11px; color: #71717A;">${snap.category} &bull; ${snap.primaryColor}</div>
               </div>
             </div>
-            ${snap.purchasePrice ? `<span style="font-size: 12px; font-weight: 600; color: #71717A;">$${snap.purchasePrice}</span>` : ''}
+            ${snap.purchasePrice ? `<span style="font-size: 12px; font-weight: 600; color: #71717A;">${formatCurrency(snap.purchasePrice)}</span>` : ''}
           </div>
         `).join('')}
       </div>
 
       <div style="display: flex; gap: 8px;">
         <button id="btn-edit-history-entry" class="btn btn-secondary btn-sm" style="flex: 1;">
-          ✏️ Correct Date / Notes
+          Correct Date / Notes
         </button>
         <button id="btn-delete-history-entry" class="btn btn-secondary btn-sm" style="color: #DC2626;">
           Delete Entry
@@ -608,6 +611,196 @@ export class ModalManager {
     `;
 
     this._renderSheet('Wardrobe Wear Counts', contentHtml);
+  }
+
+  // 8. USER LOGIN MODAL
+  openLoginModal({ onSuccess, onSwitchToSignup } = {}) {
+    const contentHtml = `
+      <form id="form-login" style="display: flex; flex-direction: column; gap: 14px;">
+        <div id="login-error-alert" style="display: none; padding: 10px 12px; background: #FEF2F2; border: 1px solid #FCA5A5; color: #991B1B; border-radius: 8px; font-size: 12px; font-weight: 600;"></div>
+
+        <div class="form-group" style="margin-bottom: 0;">
+          <label class="form-label" for="login-email">Email Address</label>
+          <input type="email" id="login-email" class="form-input" placeholder="alex@wardli.style" required autofocus style="background: #FFFFFF;">
+        </div>
+
+        <div class="form-group" style="margin-bottom: 0;">
+          <label class="form-label" for="login-password">Password</label>
+          <input type="password" id="login-password" class="form-input" placeholder="Enter your password" required style="background: #FFFFFF;">
+        </div>
+
+        <button type="submit" id="btn-submit-login" class="btn btn-primary btn-block" style="padding: 13px; font-size: 14px; font-weight: 700; margin-top: 6px;">
+          Log In &rarr;
+        </button>
+
+        <div style="text-align: center; margin-top: 4px; font-size: 12px; color: #71717A;">
+          Don't have an account? 
+          <button type="button" id="btn-goto-signup" style="background: none; border: none; font-weight: 700; color: #000000; cursor: pointer; text-decoration: underline; padding: 0;">
+            Sign up now
+          </button>
+        </div>
+
+        <div style="position: relative; text-align: center; margin: 12px 0 4px 0;">
+          <hr style="border: 0; border-top: 1px solid #E5E5E5;">
+          <span style="position: absolute; top: -9px; left: 50%; transform: translateX(-50%); background: #FFFFFF; padding: 0 10px; font-size: 11px; color: #A1A1AA; font-weight: 600;">
+            OR TEST WITH DEMO
+          </span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <button type="button" id="btn-demo-alex" class="btn btn-secondary btn-sm" style="font-size: 12px; font-weight: 600; padding: 8px;">
+            Demo: Alex Chen
+          </button>
+          <button type="button" id="btn-demo-jordan" class="btn btn-secondary btn-sm" style="font-size: 12px; font-weight: 600; padding: 8px;">
+            Demo: Jordan Lee
+          </button>
+        </div>
+      </form>
+    `;
+
+    this._renderSheet('Log In to Wardli', contentHtml);
+
+    const form = this.overlay.querySelector('#form-login');
+    const errorBox = this.overlay.querySelector('#login-error-alert');
+    const emailInput = this.overlay.querySelector('#login-email');
+    const passwordInput = this.overlay.querySelector('#login-password');
+    const submitBtn = this.overlay.querySelector('#btn-submit-login');
+
+    const showError = (msg) => {
+      errorBox.textContent = msg;
+      errorBox.style.display = 'block';
+    };
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorBox.style.display = 'none';
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Logging in...';
+
+      try {
+        const user = await authService.login({
+          email: emailInput.value,
+          password: passwordInput.value
+        });
+        this.close();
+        if (onSuccess) onSuccess(user);
+      } catch (err) {
+        showError(err.message || 'Login failed. Please check your credentials.');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Log In \u2192';
+      }
+    });
+
+    this.overlay.querySelector('#btn-goto-signup').addEventListener('click', () => {
+      this.close();
+      if (onSwitchToSignup) {
+        onSwitchToSignup();
+      } else {
+        setTimeout(() => this.openSignupModal({ onSuccess }), 260);
+      }
+    });
+
+    this.overlay.querySelector('#btn-demo-alex').addEventListener('click', () => {
+      const user = authService.loginAsDemo('user_default');
+      this.close();
+      if (onSuccess) onSuccess(user);
+    });
+
+    this.overlay.querySelector('#btn-demo-jordan').addEventListener('click', () => {
+      const user = authService.loginAsDemo('user_minimalist');
+      this.close();
+      if (onSuccess) onSuccess(user);
+    });
+  }
+
+  // 9. USER SIGN UP MODAL
+  openSignupModal({ onSuccess, onSwitchToLogin } = {}) {
+    const contentHtml = `
+      <form id="form-signup" style="display: flex; flex-direction: column; gap: 14px;">
+        <div id="signup-error-alert" style="display: none; padding: 10px 12px; background: #FEF2F2; border: 1px solid #FCA5A5; color: #991B1B; border-radius: 8px; font-size: 12px; font-weight: 600;"></div>
+
+        <div class="form-group" style="margin-bottom: 0;">
+          <label class="form-label" for="signup-name">Full Name</label>
+          <input type="text" id="signup-name" class="form-input" placeholder="e.g. Maya Lin" required autofocus style="background: #FFFFFF;">
+        </div>
+
+        <div class="form-group" style="margin-bottom: 0;">
+          <label class="form-label" for="signup-email">Email Address</label>
+          <input type="email" id="signup-email" class="form-input" placeholder="name@domain.com" required style="background: #FFFFFF;">
+        </div>
+
+        <div class="form-group" style="margin-bottom: 0;">
+          <label class="form-label" for="signup-password">Password (minimum 6 characters)</label>
+          <input type="password" id="signup-password" class="form-input" placeholder="Create a secure password" minlength="6" required style="background: #FFFFFF;">
+        </div>
+
+        <div class="form-group" style="margin-bottom: 0;">
+          <label class="form-label" for="signup-currency">Preferred Currency</label>
+          <select id="signup-currency" class="form-input" style="background: #FFFFFF;">
+            ${Object.values(CURRENCIES).map(c => `
+              <option value="${c.code}" ${c.code === 'INR' ? 'selected' : ''}>${c.label}</option>
+            `).join('')}
+          </select>
+        </div>
+
+        <button type="submit" id="btn-submit-signup" class="btn btn-primary btn-block" style="padding: 13px; font-size: 14px; font-weight: 700; margin-top: 6px;">
+          Create My Wardrobe &rarr;
+        </button>
+
+        <div style="text-align: center; margin-top: 4px; font-size: 12px; color: #71717A;">
+          Already have an account? 
+          <button type="button" id="btn-goto-login" style="background: none; border: none; font-weight: 700; color: #000000; cursor: pointer; text-decoration: underline; padding: 0;">
+            Log in
+          </button>
+        </div>
+      </form>
+    `;
+
+    this._renderSheet('Create Your Wardli Account', contentHtml);
+
+    const form = this.overlay.querySelector('#form-signup');
+    const errorBox = this.overlay.querySelector('#signup-error-alert');
+    const nameInput = this.overlay.querySelector('#signup-name');
+    const emailInput = this.overlay.querySelector('#signup-email');
+    const passwordInput = this.overlay.querySelector('#signup-password');
+    const currencySelect = this.overlay.querySelector('#signup-currency');
+    const submitBtn = this.overlay.querySelector('#btn-submit-signup');
+
+    const showError = (msg) => {
+      errorBox.textContent = msg;
+      errorBox.style.display = 'block';
+    };
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorBox.style.display = 'none';
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Creating account...';
+
+      try {
+        const user = await authService.register({
+          name: nameInput.value,
+          email: emailInput.value,
+          password: passwordInput.value,
+          preferredCurrency: currencySelect.value
+        });
+        this.close();
+        if (onSuccess) onSuccess(user);
+      } catch (err) {
+        showError(err.message || 'Registration failed.');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Create My Wardrobe \u2192';
+      }
+    });
+
+    this.overlay.querySelector('#btn-goto-login').addEventListener('click', () => {
+      this.close();
+      if (onSwitchToLogin) {
+        onSwitchToLogin();
+      } else {
+        setTimeout(() => this.openLoginModal({ onSuccess }), 260);
+      }
+    });
   }
 }
 

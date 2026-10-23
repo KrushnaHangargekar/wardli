@@ -3,7 +3,7 @@
  * Deterministic analytics calculated strictly from user data without third-party or AI APIs.
  */
 
-import { storage } from '../../services/storage.js';
+import { storage, formatCurrency } from '../../services/storage.js';
 import { analyticsService } from '../../services/analyticsService.js';
 import { getGarmentSvg } from '../assets.js';
 
@@ -24,7 +24,7 @@ export function renderAnalyticsScreen({ onOpenGarmentDetail }) {
       </div>
 
       <!-- Overview KPI Cards -->
-      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px;">
+      <div class="analytics-kpi-grid">
         <div style="background: #FFFFFF; border: 1px solid #E5E5E5; border-radius: 14px; padding: 14px;">
           <div style="font-size: 11px; font-weight: 700; color: #71717A; text-transform: uppercase;">Recorded Wears</div>
           <div style="font-size: 26px; font-weight: 800; color: #000000; margin-top: 4px;">${stats.totalRecordedWears}</div>
@@ -45,15 +45,17 @@ export function renderAnalyticsScreen({ onOpenGarmentDetail }) {
 
         <div style="background: #FFFFFF; border: 1px solid #E5E5E5; border-radius: 14px; padding: 14px;">
           <div style="font-size: 11px; font-weight: 700; color: #71717A; text-transform: uppercase;">Wardrobe Value</div>
-          <div style="font-size: 26px; font-weight: 800; color: #000000; margin-top: 4px;">$${stats.costPerWear.totalInvestment}</div>
+          <div style="font-size: 26px; font-weight: 800; color: #000000; margin-top: 4px;">${formatCurrency(stats.costPerWear.totalInvestment)}</div>
           <div style="font-size: 11px; color: #71717A;">${stats.costPerWear.totalItemsWithPrice} priced items</div>
         </div>
       </div>
 
       ${!stats.hasSufficientHistory ? `
         <div class="empty-state">
-          <div style="font-size: 34px;">📈</div>
-          <h3 class="empty-state-title">Insufficient wear history</h3>
+          <div style="width: 40px; height: 40px; border-radius: 10px; background: #F4F4F5; margin: 0 auto 14px; display: flex; align-items: center; justify-content: center;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#71717A" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <h3 class="empty-state-title">Not enough data yet</h3>
           <p class="empty-state-desc">Start wearing outfits and logging history to reveal your most-worn pieces, repetition rates, and cost-per-wear.</p>
         </div>
       ` : `
@@ -142,10 +144,10 @@ export function renderAnalyticsScreen({ onOpenGarmentDetail }) {
               <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; border-bottom: 1px solid #F4F4F5; padding-bottom: 6px;">
                 <div>
                   <div style="font-weight: 700; color: #000000;">${item.name}</div>
-                  <div style="color: #71717A;">Cost $${item.purchasePrice} &bull; ${item.wearCount} wears</div>
+                  <div style="color: #71717A;">Cost ${formatCurrency(item.purchasePrice)} &bull; ${item.wearCount} wears</div>
                 </div>
                 <div style="font-size: 13px; font-weight: 800; color: #059669; background: #ECFDF5; padding: 2px 8px; border-radius: 6px;">
-                  $${item.costPerWear}/wear
+                  ${formatCurrency(item.costPerWear)}/wear
                 </div>
               </div>
             `).join('')}
@@ -157,10 +159,10 @@ export function renderAnalyticsScreen({ onOpenGarmentDetail }) {
               <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; border-bottom: 1px solid #F4F4F5; padding-bottom: 6px;">
                 <div>
                   <div style="font-weight: 700; color: #000000;">${item.name}</div>
-                  <div style="color: #71717A;">Cost $${item.purchasePrice} &bull; ${item.wearCount} wears</div>
+                  <div style="color: #71717A;">Cost ${formatCurrency(item.purchasePrice)} &bull; ${item.wearCount} wears</div>
                 </div>
                 <div style="font-size: 13px; font-weight: 800; color: #D97706; background: #FFFBEB; padding: 2px 8px; border-radius: 6px;">
-                  $${item.costPerWear}/wear
+                  ${formatCurrency(item.costPerWear)}/wear
                 </div>
               </div>
             `).join('')}
