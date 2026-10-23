@@ -85,6 +85,7 @@ export class SuggestionEngine {
    */
   generateSuggestions({
     occasion = 'Casual',
+    weather = null,
     userId = this.storage.getCurrentUserId(),
     maxResults = 3
   }) {
@@ -172,6 +173,30 @@ export class SuggestionEngine {
           // Favorited bonus
           if (favoritedSignatures.has(comboKey)) {
             score += 25;
+          }
+
+          // Weather suitability scoring (Deterministic zero AI)
+          if (weather) {
+            const w = weather.toLowerCase();
+            const topSub = (top.subcategory || '').toLowerCase();
+            const bottomSub = (bottom.subcategory || '').toLowerCase();
+            const shoeSub = (shoes.subcategory || '').toLowerCase();
+
+            if (w === 'cold') {
+              if (['sweater', 'hoodie', 'jacket', 'overshirt'].some(s => topSub.includes(s))) score += 30;
+              if (['jeans', 'trousers', 'cargo'].some(s => bottomSub.includes(s))) score += 20;
+              if (['boots'].some(s => shoeSub.includes(s))) score += 15;
+              if (['shorts', 'sandals', 'slippers'].some(s => bottomSub.includes(s) || shoeSub.includes(s))) score -= 40;
+            } else if (w === 'warm' || w === 'hot') {
+              if (['t-shirt', 'polo', 'shirt'].some(s => topSub.includes(s))) score += 25;
+              if (['shorts'].some(s => bottomSub.includes(s))) score += 30;
+              if (['sandals', 'sneakers', 'loafers'].some(s => shoeSub.includes(s))) score += 20;
+              if (['hoodie', 'sweater', 'jacket', 'boots'].some(s => topSub.includes(s) || shoeSub.includes(s))) score -= 35;
+            } else if (w === 'rain') {
+              if (['jacket'].some(s => topSub.includes(s))) score += 25;
+              if (['boots', 'sneakers'].some(s => shoeSub.includes(s))) score += 20;
+              if (['sandals', 'slippers'].some(s => shoeSub.includes(s))) score -= 40;
+            }
           }
 
           // Repetition Penalty Calculation

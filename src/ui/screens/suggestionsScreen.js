@@ -16,6 +16,7 @@ export function renderSuggestionsScreen({ onOpenSwapDrawer, onNavigateHistory, o
   container.className = 'suggestions-screen';
 
   let selectedOccasion = 'Casual';
+  let selectedWeather = null;
   let activeIndex = 0;
   let currentSuggestions = [];
   let currentOutfit = null;
@@ -24,6 +25,7 @@ export function renderSuggestionsScreen({ onOpenSwapDrawer, onNavigateHistory, o
     const userId = storage.getCurrentUserId();
     const result = suggestionEngine.generateSuggestions({
       occasion: selectedOccasion,
+      weather: selectedWeather,
       userId,
       maxResults: 3
     });
@@ -57,6 +59,23 @@ export function renderSuggestionsScreen({ onOpenSwapDrawer, onNavigateHistory, o
             ${occ}
           </button>
         `).join('')}
+      </div>
+
+      <!-- Weather Filter Pill Bar -->
+      <div style="display: flex; align-items: center; gap: 6px; overflow-x: auto; padding: 0 0 12px 0;" id="weather-pills">
+        <span style="font-size: 11px; font-weight: 700; color: #71717A; white-space: nowrap; margin-right: 2px;">Climate:</span>
+        <button class="pill-btn ${selectedWeather === null ? 'active' : ''}" data-weather="all" style="font-size: 11px; padding: 4px 9px;">
+          Any
+        </button>
+        <button class="pill-btn ${selectedWeather === 'cold' ? 'active' : ''}" data-weather="cold" style="font-size: 11px; padding: 4px 9px;">
+          ❄️ Cold (<18°C)
+        </button>
+        <button class="pill-btn ${selectedWeather === 'warm' ? 'active' : ''}" data-weather="warm" style="font-size: 11px; padding: 4px 9px;">
+          ☀️ Warm (>24°C)
+        </button>
+        <button class="pill-btn ${selectedWeather === 'rain' ? 'active' : ''}" data-weather="rain" style="font-size: 11px; padding: 4px 9px;">
+          🌧️ Rain
+        </button>
       </div>
 
       ${!currentOutfit ? `
@@ -177,6 +196,15 @@ export function renderSuggestionsScreen({ onOpenSwapDrawer, onNavigateHistory, o
     container.querySelectorAll('#occasion-pills .pill-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         selectedOccasion = btn.getAttribute('data-occ');
+        loadSuggestions();
+      });
+    });
+
+    // Weather pill listeners
+    container.querySelectorAll('#weather-pills .pill-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const val = btn.getAttribute('data-weather');
+        selectedWeather = val === 'all' ? null : val;
         loadSuggestions();
       });
     });

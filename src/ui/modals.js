@@ -802,6 +802,153 @@ export class ModalManager {
       }
     });
   }
+
+  // 10. TRAVEL PACKING CAPSULE GENERATOR
+  openTravelPackingModal() {
+    const userId = storage.getCurrentUserId();
+    const cleanGarments = storage.getGarments(userId, { includeArchived: false })
+      .filter(g => g.status === AVAILABILITY_STATUS.CLEAN);
+
+    const tops = cleanGarments.filter(g => g.category.toLowerCase() === 'tops');
+    const bottoms = cleanGarments.filter(g => g.category.toLowerCase() === 'bottoms');
+    const shoes = cleanGarments.filter(g => g.category.toLowerCase() === 'footwear');
+    const accessories = cleanGarments.filter(g => g.category.toLowerCase() === 'accessories');
+
+    const contentHtml = `
+      <div style="display: flex; flex-direction: column; gap: 14px;">
+        <p style="font-size: 13px; color: #71717A; margin-bottom: 2px;">
+          Build a minimalist travel capsule checklist with zero duplicates based on your clean wardrobe items.
+        </p>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label">Trip Duration</label>
+            <select id="packing-duration" class="form-input" style="background: #FFFFFF;">
+              <option value="3" selected>3 Days (Weekend Trip)</option>
+              <option value="5">5 Days (Work / City Trip)</option>
+              <option value="7">7 Days (Full Week)</option>
+            </select>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label">Trip Style</label>
+            <select id="packing-style" class="form-input" style="background: #FFFFFF;">
+              <option value="Casual" selected>Casual &amp; Leisure</option>
+              <option value="Formal">Business &amp; Formal</option>
+              <option value="Travel">Active &amp; Sightseeing</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="packing-list-container" style="max-height: 340px; overflow-y: auto; background: #FAFAFA; border: 1px solid #E5E5E5; border-radius: 12px; padding: 12px;"></div>
+
+        <div style="display: flex; gap: 8px;">
+          <button type="button" id="btn-copy-packing" class="btn btn-primary btn-block" style="padding: 12px; font-size: 13px; font-weight: 700;">
+            📋 Copy Packing Checklist
+          </button>
+        </div>
+      </div>
+    `;
+
+    this._renderSheet('🎒 Travel Packing Checklist', contentHtml);
+
+    const containerEl = this.overlay.querySelector('#packing-list-container');
+    const durationSelect = this.overlay.querySelector('#packing-duration');
+    const styleSelect = this.overlay.querySelector('#packing-style');
+    const copyBtn = this.overlay.querySelector('#btn-copy-packing');
+
+    const renderList = () => {
+      const days = Number(durationSelect.value);
+      const style = styleSelect.value;
+
+      // Recommended capsule formula
+      const topCount = Math.min(days, tops.length);
+      const bottomCount = Math.min(Math.ceil(days / 2), bottoms.length);
+      const shoeCount = Math.min(days > 3 ? 2 : 1, shoes.length);
+      const accCount = Math.min(days > 3 ? 3 : 2, accessories.length);
+
+      const sortByStyle = (arr) => [...arr].sort((a, b) => {
+        const aMatch = a.occasions.includes(style) ? 1 : 0;
+        const bMatch = b.occasions.includes(style) ? 1 : 0;
+        return bMatch - aMatch;
+      });
+
+      const selectedTops = sortByStyle(tops).slice(0, topCount);
+      const selectedBottoms = sortByStyle(bottoms).slice(0, bottomCount);
+      const selectedShoes = sortByStyle(shoes).slice(0, shoeCount);
+      const selectedAcc = sortByStyle(accessories).slice(0, accCount);
+
+      containerEl.innerHTML = `
+        <div style="margin-bottom: 12px;">
+          <div style="font-size: 11px; font-weight: 800; color: #71717A; text-transform: uppercase; margin-bottom: 6px;">
+            Tops (${selectedTops.length} items)
+          </div>
+          ${selectedTops.map(t => `
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; padding: 4px 0; cursor: pointer;">
+              <input type="checkbox" checked style="accent-color: #000000;">
+              <span>${t.name} (${t.subcategory || 'Top'})</span>
+            </label>
+          `).join('') || '<div style="font-size: 12px; color: #A1A1AA;">No clean tops</div>'}
+        </div>
+
+        <div style="margin-bottom: 12px;">
+          <div style="font-size: 11px; font-weight: 800; color: #71717A; text-transform: uppercase; margin-bottom: 6px;">
+            Bottoms (${selectedBottoms.length} items)
+          </div>
+          ${selectedBottoms.map(b => `
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; padding: 4px 0; cursor: pointer;">
+              <input type="checkbox" checked style="accent-color: #000000;">
+              <span>${b.name} (${b.subcategory || 'Bottom'})</span>
+            </label>
+          `).join('') || '<div style="font-size: 12px; color: #A1A1AA;">No clean bottoms</div>'}
+        </div>
+
+        <div style="margin-bottom: 12px;">
+          <div style="font-size: 11px; font-weight: 800; color: #71717A; text-transform: uppercase; margin-bottom: 6px;">
+            Footwear (${selectedShoes.length} pairs)
+          </div>
+          ${selectedShoes.map(s => `
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; padding: 4px 0; cursor: pointer;">
+              <input type="checkbox" checked style="accent-color: #000000;">
+              <span>${s.name}</span>
+            </label>
+          `).join('') || '<div style="font-size: 12px; color: #A1A1AA;">No clean footwear</div>'}
+        </div>
+
+        <div>
+          <div style="font-size: 11px; font-weight: 800; color: #71717A; text-transform: uppercase; margin-bottom: 6px;">
+            Accessories (${selectedAcc.length} items)
+          </div>
+          ${selectedAcc.map(a => `
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; padding: 4px 0; cursor: pointer;">
+              <input type="checkbox" checked style="accent-color: #000000;">
+              <span>${a.name}</span>
+            </label>
+          `).join('') || '<div style="font-size: 12px; color: #A1A1AA;">No accessories</div>'}
+        </div>
+      `;
+    };
+
+    durationSelect.addEventListener('change', renderList);
+    styleSelect.addEventListener('change', renderList);
+    renderList();
+
+    copyBtn.addEventListener('click', () => {
+      const checkedLabels = Array.from(containerEl.querySelectorAll('label'))
+        .filter(l => l.querySelector('input').checked)
+        .map(l => `[ ] ${l.querySelector('span').textContent}`);
+
+      const text = `Wardli Travel Packing Checklist (${durationSelect.value} Days - ${styleSelect.value})\n\n` + checkedLabels.join('\n');
+      navigator.clipboard.writeText(text).then(() => {
+        copyBtn.textContent = '✓ Copied to Clipboard!';
+        setTimeout(() => {
+          copyBtn.textContent = '📋 Copy Packing Checklist';
+        }, 2000);
+      }).catch(() => {
+        alert(text);
+      });
+    });
+  }
 }
 
 export const modalManager = new ModalManager();
