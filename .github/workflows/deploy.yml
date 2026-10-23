@@ -9,6 +9,8 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 jobs:
   build-and-deploy:
@@ -30,7 +32,9 @@ jobs:
         run: npm test
 
       - name: Build Production Assets
-        run: npm run build
+        run: |
+          npm run build
+          touch dist/.nojekyll
 
       - name: Deploy to GitHub Pages (gh-pages branch)
         uses: JamesIves/github-pages-deploy-action@v4
