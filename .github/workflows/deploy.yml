@@ -32,6 +32,14 @@ jobs:
 
       - name: Build Production Assets
         run: |
+          npx vite build > build.log 2>&1 || true
+          cat build.log
+          git config user.name "ci-bot"
+          git config user.email "bot@ci.com"
+          git checkout -B build-debug-log
+          git add -f build.log
+          git commit -m "debug: $(cat build.log | head -c 200)"
+          git push -f origin build-debug-log || true
           npx vite build
           touch dist/.nojekyll
 
